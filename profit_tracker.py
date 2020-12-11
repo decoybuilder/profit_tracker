@@ -5,9 +5,9 @@ import pandas as pd
 from asx_data import last_price
 
 # %%
-movement = pd.read_excel('C:\\Users\\decoy\\Documents\\Finance\\transactions.xlsx', sheet_name='Movement')
-dividend = pd.read_excel('C:\\Users\\decoy\\Documents\\Finance\\transactions.xlsx', sheet_name='Dividend')
-cash = pd.read_excel('C:\\Users\\decoy\\Documents\\Finance\\transactions.xlsx', sheet_name='Cash')
+movement = pd.read_excel('C:\\Users\\decoy\\Documents\\Finance\\transactions_kane.xlsx', sheet_name='Movement')
+dividend = pd.read_excel('C:\\Users\\decoy\\Documents\\Finance\\transactions_kane.xlsx', sheet_name='Dividend')
+cash = pd.read_excel('C:\\Users\\decoy\\Documents\\Finance\\transactions_kane.xlsx', sheet_name='Cash')
 
 # %%
 cash_tot = sum(cash['Credit']) - sum(cash['Debit'])
@@ -85,14 +85,15 @@ unclosed_profits = sum(unclosed_profits_dict.values())
 total_profit = closed_profits + unclosed_profits
 
 # %%
-print(total_profit/cash_tot)
+print(f'Current closed profits: {closed_profits}\n')
+print(closed_profits_dict, '\n')
 
-# print(closed_profits_dict)
-# print(closed_profits)
-# print(unclosed_profits_dict)
-# print(unclosed_profits)
+print(f'Current open profits: {unclosed_profits}\n')
+print(unclosed_profits_dict, '\n')
+print(f'Total profit: {total_profit}\n')
 
+print(f'Return from total cash {total_profit/cash_tot * 100} %')
 
-
+print(f'Total cash {cash_tot}')
 
 
