@@ -1,7 +1,5 @@
-#%%
 import yfinance as yf
 import pandas as pd
-from collections import defaultdict
 
 def is_year(start, end):
     if length := (end - start) > pd.Timedelta(365, unit='D'): return True
@@ -15,7 +13,6 @@ movement = pd.read_excel('C:\\Users\\decoy\\Documents\\Finance\\transactions.xls
 dividend = pd.read_excel('C:\\Users\\decoy\\Documents\\Finance\\transactions.xlsx', sheet_name='Dividend')
 cash = pd.read_excel('C:\\Users\\decoy\\Documents\\Finance\\transactions.xlsx', sheet_name='Cash')
 movement['Cost'] = [movement['Price'][idx] - movement['Fees'][idx] / movement['Quantity'][idx] if i == 'Sell' else movement['Price'][idx] + movement['Fees'][idx] / movement['Quantity'][idx] for idx, i in enumerate(movement['Action'])]
-# print(movement)
 
 
 sells = movement[movement['Action'] == 'Sell']
@@ -62,7 +59,7 @@ for b_index, b_row in buys.iterrows():
             b_quantity = 0
 
         if b_quantity == 0: break
-# print(closed_profits)
+
 for d_index, d_row in dividend.iterrows():
     d_date, d_code, d_amount, d_frank = d_row
     new_row = {'Date': d_date, 'Code': d_code, 'Profit': d_amount + d_frank , 'Profit (%)': 'N/A', 'Type': 'Dividend'}
@@ -74,7 +71,5 @@ for d_index, d_row in dividend.iterrows():
 close_profits_sum = closed_profits.groupby('Code', sort = False)['Profit'].sum().reset_index()
 tax_sum = tax.groupby('Code', sort = False)['Amount'].sum().reset_index()
 print(close_profits_sum )
-# print(tax_sum)
 print(f'The total amount of closed profit is ${close_profits_sum["Profit"].sum()}')
-
 print(f'The amount to be added to your income is ${tax_sum["Amount"].sum()}')
