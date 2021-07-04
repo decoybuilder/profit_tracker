@@ -1,6 +1,7 @@
 import yfinance as yf
 import pandas as pd
 from matplotlib import pyplot as plt
+from matplotlib import dates as mpl_dates
 
 movement = pd.read_excel('C:\\Users\\decoy\\Documents\\Finance\\transactions.xlsx', sheet_name='Movement')
 dividend = pd.read_excel('C:\\Users\\decoy\\Documents\\Finance\\transactions.xlsx', sheet_name='Dividend')
@@ -46,6 +47,7 @@ index_lad_returns = []
 port_lad_returns = []
 index_lad_returns_cum = []
 port_lad_returns_cum = []
+principal = []
 cache = {'AX':1}
 for day in days:
     try:
@@ -57,6 +59,8 @@ for day in days:
     except:
         cashflow = 0
     
+    principal.append(inflows)
+
 
     try:
         divloc = dividend[dividend['Date'] == day]
@@ -144,24 +148,57 @@ for day in days:
         port_lad_returns_cum.append(((port_lad_returns_cum[-1]/100 + 1) * (1 + temp_port) - 1) * 100)
         index_lad_returns_cum.append(((index_lad_returns_cum[-1]/100 + 1) * (1 + temp_index) - 1) * 100)
 
+plt.style.use('seaborn-darkgrid')
+
+
 plt.figure(0)
 plt.plot(days, port_val)
 plt.plot(days, index_val)
+plt.plot(days, principal)
+plt.legend(['Your Portfolio', 'ASX 200', 'Cash'])
+plt.title('Value of Your Portfolio vs Portfolio if you Invested Immediately into ASX 200')
+plt.xlabel('Date')
+plt.ylabel('Portfolio Value (AUD)')
+date_format = mpl_dates.DateFormatter('%b-%y')
+fmt_month = mpl_dates.MonthLocator()
+plt.gcf().autofmt_xdate()
+plt.gca().xaxis.set_major_locator(fmt_month)
+plt.gca().xaxis.set_major_formatter(date_format)
+plt.tight_layout()
 
 plt.figure(1)
 plt.plot(days, port_return)
 plt.plot(days, index_return)
 plt.legend(['Your Portfolio', 'ASX 200'])
+plt.title('Profit as Percent of Cash Invest')
+plt.xlabel('Date')
+plt.ylabel('Profit %')
+plt.gcf().autofmt_xdate()
+plt.gca().xaxis.set_major_locator(fmt_month)
+plt.gca().xaxis.set_major_formatter(date_format)
+plt.tight_layout()
 
 plt.figure(2)
 plt.plot(days, port_lad_returns)
 plt.plot(days, index_lad_returns)
 plt.legend(['Your Portfolio', 'ASX 200'])
-plt.title('Lad Returns')
+plt.title('Daily Returns Normalised to Cash')
+plt.xlabel('Date')
+plt.ylabel('Daily Returns %')
+plt.gcf().autofmt_xdate()
+plt.gca().xaxis.set_major_locator(fmt_month)
+plt.gca().xaxis.set_major_formatter(date_format)
+plt.tight_layout()
 
 plt.figure(3)
 plt.plot(days, port_lad_returns_cum)
 plt.plot(days, index_lad_returns_cum)
 plt.legend(['Your Portfolio', 'ASX 200'])
-plt.title('Lad Returns Cum')
+plt.title('Cumulative Returns Normalised to Cash')
+plt.xlabel('Date')
+plt.ylabel('Cumulative Returns %')
+plt.gcf().autofmt_xdate()
+plt.gca().xaxis.set_major_locator(fmt_month)
+plt.gca().xaxis.set_major_formatter(date_format)
+plt.tight_layout()
 plt.show()

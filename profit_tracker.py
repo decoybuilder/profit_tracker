@@ -5,9 +5,9 @@ import pandas as pd
 from asx_data import last_price
 
 # %%
-movement = pd.read_excel('C:\\Users\\decoy\\Documents\\Finance\\transactions_kane.xlsx', sheet_name='Movement')
-dividend = pd.read_excel('C:\\Users\\decoy\\Documents\\Finance\\transactions_kane.xlsx', sheet_name='Dividend')
-cash = pd.read_excel('C:\\Users\\decoy\\Documents\\Finance\\transactions_kane.xlsx', sheet_name='Cash')
+movement = pd.read_excel('C:\\Users\\decoy\\Documents\\Finance\\transactions.xlsx', sheet_name='Movement')
+dividend = pd.read_excel('C:\\Users\\decoy\\Documents\\Finance\\transactions.xlsx', sheet_name='Dividend')
+cash = pd.read_excel('C:\\Users\\decoy\\Documents\\Finance\\transactions.xlsx', sheet_name='Cash')
 
 # %%
 cash_tot = sum(cash['Credit']) - sum(cash['Debit'])
@@ -55,14 +55,19 @@ while len(sells) != 0:
 
 
 # %%
+taxable = 0
 for div_index in range(0, len(dividend)):
-    d_date, d_code, d_amount  = dividend.loc[div_index]
+    d_date, d_code, d_amount, d_frank  = dividend.loc[div_index]
     name = d_code.replace('.', '_').lower()
 
     if name not in closed_profits_dict:
         closed_profits_dict[name] = 0
+
+    div = d_amount + d_frank
         
-    closed_profits_dict[name] += d_amount
+    closed_profits_dict[name] += div
+
+    taxable += div * 0.19 - d_frank
 
 # %%
 unclosed_profits_dict = {}
@@ -83,10 +88,12 @@ for buy_index in range(len(buys)):
 closed_profits = sum(closed_profits_dict.values())
 unclosed_profits = sum(unclosed_profits_dict.values())
 total_profit = closed_profits + unclosed_profits
-
+taxable += closed_profits
 # %%
 print(f'Current closed profits: {closed_profits}\n')
 print(closed_profits_dict, '\n')
+
+print(f'Taxable income is {taxable}')
 
 print(f'Current open profits: {unclosed_profits}\n')
 print(unclosed_profits_dict, '\n')

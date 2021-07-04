@@ -83,9 +83,9 @@ open_profits_sum = open_profits.groupby('Code', sort = False)['Quantity'].sum().
 open_profits_sum = open_profits_sum.merge(open_profits.groupby('Code', sort = False)['Cost Base'].sum().reset_index(), on='Code')
 open_profits_sum['Avg Cost'] = open_profits_sum['Cost Base'] / open_profits_sum['Quantity']
 
-open_code = '^AXJO ' + ' '.join(open_profits_sum['Code'].tolist())
+open_code = ' '.join(open_profits_sum['Code'].tolist())
 
-data = yf.download(open_code, start=cash['Date'][0].date(), group_by='ticker')
+data = yf.download(open_code, start=pd.to_datetime("today") - pd.Timedelta(1, unit='D'), group_by='ticker')
 
 market_list = [0] * len(open_profits_sum['Code'])
 cache = {'AX':1}
